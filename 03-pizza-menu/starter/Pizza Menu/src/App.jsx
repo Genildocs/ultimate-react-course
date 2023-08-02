@@ -56,6 +56,13 @@ function App() {
 
 export default App;
 
+function Header(){}
+
+function Menu(){}
+
+function Footer(){}
+
+
 function Pizza({Title, Text, Image}) {
   return(
     <>
