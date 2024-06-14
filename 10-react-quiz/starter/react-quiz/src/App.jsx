@@ -1,46 +1,50 @@
-import { useEffect, useReducer } from "react";
-import Header from "./components/Header";
-import Main from "./components/Main";
+import { useEffect, useReducer } from 'react';
+import Header from './components/Header';
+import Main from './components/Main';
+import Loader from './components/Loader';
+import Error from './components/Error';
+import StartScreen from './components/StartScreen';
 
 const initialState = {
   questions: [],
-  status: "loading...",
+  status: 'loading...',
 };
 
 function reducer(state, action) {
   switch (action.type) {
-    case "dataReceived":
+    case 'dataReceived':
       return {
         ...state,
         questions: action.payload,
-        status: "ready",
+        status: 'ready',
       };
-    case "dataError":
+    case 'dataError':
       return {
         ...state,
-        status: "error",
+        status: 'error',
       };
     default:
-      throw new Error("Unexpected action");
+      throw new Error('Unexpected action');
   }
 }
 
 export default function App() {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [{ questions, status }, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    fetch("http://localhost:3000/questions")
+    fetch('http://localhost:3000/questions')
       .then((res) => res.json())
-      .then((data) => dispatch({ type: "dataReceived", payload: data }))
-      .catch((err) => dispatch({ type: "dataError" }));
+      .then((data) => dispatch({ type: 'dataReceived', payload: data }))
+      .catch((err) => dispatch({ type: 'dataError' }));
   }, []);
 
   return (
     <div className="app">
       <Header />
       <Main>
-        <p>1/15</p>
-        <p>Questions?</p>
+        {status === 'loading...' && <Loader />}
+        {status === 'error' && <Error />}
+        {status === 'ready' && <StartScreen />}
       </Main>
     </div>
   );
